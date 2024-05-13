@@ -14,8 +14,13 @@ admin_password = "adminpass"
 
 # Function to display available games with their numbers and rental costs
 def display_available_games():
-    print(game_library)
-    Message("")
+    Space()
+    print("Game Library")
+    for key, value in game_library.items():
+        print(f"{key}:{value}")
+    Message("Press enter to exit.")
+    return
+        
     
 def Space():
     for i in range(3):
@@ -23,17 +28,23 @@ def Space():
 
 def Message(message):
     input(message)
+    Space()
 
 def Inputs(max):
     try:
         inputs= int(input("What would you like to do?" ))
+        Space()
         if inputs > max or inputs < 0:
             print("not available, choose a different option")
+            input()
             return
         return inputs
+        
     except ValueError:
             print("not available, choose a different option")
+            input()
             return
+        
 
 
 # Function to register a new user
@@ -47,7 +58,7 @@ def register_user():
             continue
         else:
             password = input("Enter password: ")
-            user_accounts[username] = {"Username":username, "Password":password, "Budget" : 0}
+            user_accounts[username] = {"Username":username, "Password":password, "Budget" : 0,"Redeemable points":0,"Inventory":[]}
             print("Account created!")
             Space()
             main()
@@ -74,19 +85,73 @@ def Log_in():
 
 # Function to rent a game
 def rent_game(username):
-    pass
+    display_available_games()
 
+    rent=input("Check inventory?(y/n) ")
+    if rent =="y":
+        display_inventory(username)
+    else:
+        pass
+
+    renting_game= input("Which game would you like to rent? ")
+    game_cost=game_library[renting_game]["cost"]
+    if renting_game in game_library:
+        if game_library[renting_game]["quantity"]>0:
+            user_accounts[username]["Inventory"].append(renting_game)
+            if user_accounts[username]["Budget"]>game_cost:
+            
+                if renting_game in user_accounts[username]["Inventory"]:
+                    print("Game Rented.")
+               
+                    game_points=game_cost/2
+                    user_accounts[username]["Redeemable points"]+=game_points
+
+                    user_accounts[username]["Budget"]-=game_cost
+
+                    game_library[renting_game]["quantity"]-=1  
+                    input()
+                    return
+                else:
+                    print("Error, game cannot be rented")
+                    return
+            else:
+                Message("You do not have enough budget. top-up first.")
+                return
+        else:
+            print("Sorry no more copies available")
+            return
+    else:
+        print("Sorry, Game does not exist in the Library")
+        return
+    
 # Function to return a game
 def return_game(username):
-    pass
+    display_inventory(username)
+    returning_game=input("Which game to return? ")
+    if returning_game in user_accounts[username]["Inventory"]:
+        user_accounts[username]["Inventory"].remove(returning_game)
+        Message("Thank you for returning the game")
+    else:
+        Message("No game found in your inventory")
+
 
 # Function to top-up user account
 def top_up_account(username, amount):
-    print("topping up account")
+    try:
+        amount=int(input("How much do you want to top-up:"))
+        user_accounts[username]["Budget"]+=amount
 
+        Message("Top-upped!")
+        return
+        
+    except ValueError:
+            print("Only type a numerical amount")
+            input()
+            return
+    
 # Function to display user's inventory
 def display_inventory(username):
-    pass
+    print(user_accounts[username]["Inventory"])
 
 # Function for admin to update game details
 def admin_update_game(username):
@@ -120,46 +185,52 @@ def admin_menu():
 def redeem_free_rental(username):
     pass
 
-# Function to display game inventory
-def display_game_inventory():
-    pass
-
 # Function to handle user's logged-in menu
 def logged_in_menu(username):
-    print("Welcome to the GameLib" + username)
-    print("1.View Library\n2.Rent games\n3.Check balance\n4.Check info")
-    choice=Inputs(4)
+    while True:
+        print("Welcome to the GameLib " + username)
+        print("1.View Library\n2.Rent games\n3.Return game\n4.Top-up\n4.Check info")
+    
+        choice=Inputs(5)
 
-    if choice ==1:
-        display_available_games()
-    if choice==2:
-        rent_game(username)
-    if choice==3:
-        top_up_account(username)
-    if choice==4:
-        check_credentials(username, password)
+        if choice==1:
+            display_available_games()
+        if choice==2:
+            rent_game(username)
+        if choice==3:
+            return_game(username)
+        if choice==4:
+            top_up_account(username, user_accounts[username]["Budget"])
+        if choice==5:
+            check_credentials(username,user_accounts[username])  
 
 
 # Function to check user credentials
 def check_credentials(username, password):
-    pass
-    
+    Space()
+    print("Account info")
+    for key, value in user_accounts[username].items():
+        print(f"{key}:{value}")
+    input()
+    Space()
+    return
+  
 # Main function to run the program
 def main():
+    while True:
+        print("Welcome to the GameLib!")
+        print("1.Register\n2.Log in\n3.Log in as Admin\n4.View Library")
 
-    print("Welcome to the GameLib!")
-    print("1.Register\n2.Log in\n3.Log in as Admin\n4.View Library")
+        choice = Inputs(4)
 
-    choice = Inputs(4)
-
-    if choice==1:
-        register_user()
-    if choice==2:
-        Log_in()
-    if choice==3:
-        admin_login()
-    if choice==4:
-        display_available_games()
+        if choice==1:
+            register_user()
+        if choice==2:
+            Log_in()
+        if choice==3:
+            admin_login()
+        if choice==4:
+            display_available_games()
 
 
 '''if __name__ == "__main__":'''
