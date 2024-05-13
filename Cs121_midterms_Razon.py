@@ -155,7 +155,32 @@ def display_inventory(username):
 
 # Function for admin to update game details
 def admin_update_game(username):
-    pass
+    while True:
+        print("1.Add new game\n2.Update quantity & cost\n3.Exit")
+        choice=Inputs(2)
+
+        if choice==1:
+            new_game=input("Game name: ")
+            amount_game=int(input("quantity: "))
+            cost_game=input("cost: ")
+            game_library[new_game]={"quantity":amount_game,"cost":cost_game}
+            Message("New game added!")
+            admin_menu()
+            
+        if choice==2:
+            update_game=input("Which game to update")
+            amount_game=int(input("quantity: "))
+            game_library[update_game]["quantity"]=amount_game
+            cost_game=int(input("cost: "))
+            game_library[update_game]["cost"]=cost_game
+            Message("Updated!")
+            admin_menu()
+
+        if choice==3:
+            admin_menu()
+
+
+    
 
 # Function for admin login
 def admin_login():
@@ -173,13 +198,24 @@ def admin_login():
                 Message("Try again")
                 Space()
             else:
-                print("Logged in as an Admin.")
-                break
+                Message("Logged in as an Admin.")
                 admin_menu()
                 
 # Admin menu
 def admin_menu():
-    print("Logging in...")
+    print("Welcome Admin!")
+    print("1.Update games\n2.See accounts\n3.Exit")
+    
+    admin_choice=Inputs(3)
+
+    if admin_choice==1:
+        admin_update_game(admin_username)
+    if admin_choice==2:
+        for items in user_accounts:
+            print(items)
+        input()
+    if admin_choice==3:
+        main()
 
 # Function for users to redeem points for a free game rental
 def redeem_free_rental(username):
@@ -189,9 +225,9 @@ def redeem_free_rental(username):
 def logged_in_menu(username):
     while True:
         print("Welcome to the GameLib " + username)
-        print("1.View Library\n2.Rent games\n3.Return game\n4.Top-up\n4.Check info")
+        print("1.View Library\n2.Rent games\n3.Return game\n4.Top-up\n5.Check info\n6.Sign out")
     
-        choice=Inputs(5)
+        choice=Inputs(6)
 
         if choice==1:
             display_available_games()
@@ -203,6 +239,9 @@ def logged_in_menu(username):
             top_up_account(username, user_accounts[username]["Budget"])
         if choice==5:
             check_credentials(username,user_accounts[username])  
+        if choice==6:
+            Message("Bye for now.")
+            return
 
 
 # Function to check user credentials
