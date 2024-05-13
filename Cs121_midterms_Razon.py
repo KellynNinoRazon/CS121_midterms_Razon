@@ -126,7 +126,7 @@ def display_game_inventory():
 
 # Function to handle user's logged-in menu
 def logged_in_menu(username):
-    print("Welcome " + username)
+    print("Welcome to the GameLib" + username)
     print("1.View Library\n2.Rent games\n3.Check balance\n4.Check info")
     choice=Inputs(4)
 
