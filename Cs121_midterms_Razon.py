@@ -18,7 +18,7 @@ def display_available_games():
     print("Game Library")
     for key, value in game_library.items():
         print(f"{key}:{value}")
-    Message("Press enter to exit.")
+    Message("")
     return
         
     
@@ -58,7 +58,7 @@ def register_user():
             continue
         else:
             password = input("Enter password: ")
-            user_accounts[username] = {"Username":username, "Password":password, "Budget" : 0,"Redeemable points":0,"Inventory":[]}
+            user_accounts[username] = {"Username":username, "Password":password, "Budget" : float(0),"Redeemable points":0,"Inventory":[]}
             print("Account created!")
             Space()
             main()
@@ -92,38 +92,31 @@ def rent_game(username):
         display_inventory(username)
     else:
         pass
-
-    renting_game= input("Which game would you like to rent? ")
-    game_cost=game_library[renting_game]["cost"]
-    if renting_game in game_library:
-        if game_library[renting_game]["quantity"]>0:
-            user_accounts[username]["Inventory"].append(renting_game)
-            if user_accounts[username]["Budget"]>game_cost:
-            
-                if renting_game in user_accounts[username]["Inventory"]:
+    try:
+        renting_game= input("Which game would you like to rent? ")
+        game_cost=game_library[renting_game]["cost"]
+        if renting_game in game_library:
+            if game_library[renting_game]["quantity"]>0:
+                if user_accounts[username]["Budget"]>game_cost:
+                    user_accounts[username]["Inventory"].append(renting_game)
                     print("Game Rented.")
                
                     game_points=game_cost/2
                     user_accounts[username]["Redeemable points"]+=game_points
-
                     user_accounts[username]["Budget"]-=game_cost
 
                     game_library[renting_game]["quantity"]-=1  
-                    input()
+                    Message("")
                     return
                 else:
-                    print("Error, game cannot be rented")
+                    Message("You do not have enough budget. top-up first.")
                     return
             else:
-                Message("You do not have enough budget. top-up first.")
+                Message("Sorry no more copies available")
                 return
-        else:
-            print("Sorry no more copies available")
-            return
-    else:
-        print("Sorry, Game does not exist in the Library")
+    except KeyError:
+        Message("Sorry, Game does not exist in the Library")
         return
-    
 # Function to return a game
 def return_game(username):
     display_inventory(username)
@@ -219,15 +212,34 @@ def admin_menu():
 
 # Function for users to redeem points for a free game rental
 def redeem_free_rental(username):
-    pass
-
+    display_available_games()
+    choice=input("Redeem points?(y/n) ")
+    
+    if choice=="y":
+        redeeming_game=input("Which game would you like to redeem your points with: ")
+        if redeeming_game in game_library:
+            if game_library[redeeming_game]["quantity"]>0:
+                if user_accounts[username]["Redeemable points"]>=3:
+                    user_accounts[username]["Inventory"].append(redeeming_game)
+                    Message("Game Rented.")
+               
+                    user_accounts[username]["Redeemable points"]-=3
+                else:
+                    Message("You don't have enough points")
+            else:
+                Message("Sorry no more copies available")
+        else:
+            Message("Sorry, Game does not exist in the Library")
+    if choice=="n":
+        Message("")
+        
 # Function to handle user's logged-in menu
 def logged_in_menu(username):
     while True:
         print("Welcome to the GameLib " + username)
-        print("1.View Library\n2.Rent games\n3.Return game\n4.Top-up\n5.Check info\n6.Sign out")
+        print("1.View Library\n2.Rent games\n3.Return game\n4.Redeem points\n5.Top-up\n6.Check info\n7.Sign out")
     
-        choice=Inputs(6)
+        choice=Inputs(7)
 
         if choice==1:
             display_available_games()
@@ -236,10 +248,12 @@ def logged_in_menu(username):
         if choice==3:
             return_game(username)
         if choice==4:
-            top_up_account(username, user_accounts[username]["Budget"])
+            redeem_free_rental(username)
         if choice==5:
-            check_credentials(username,user_accounts[username])  
+            top_up_account(username, user_accounts[username]["Budget"])
         if choice==6:
+            check_credentials(username,user_accounts[username])  
+        if choice==7:
             Message("Bye for now.")
             return
 
@@ -247,12 +261,10 @@ def logged_in_menu(username):
 # Function to check user credentials
 def check_credentials(username, password):
     Space()
-    print("Account info")
+    print("Account Information")
     for key, value in user_accounts[username].items():
         print(f"{key}:{value}")
-    input()
-    Space()
-    return
+    Message(" ")
   
 # Main function to run the program
 def main():
@@ -272,6 +284,6 @@ def main():
             display_available_games()
 
 
-'''if __name__ == "__main__":'''
+if __name__ == "__main__":
 
-main()
+    main()
