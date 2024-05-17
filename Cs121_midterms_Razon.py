@@ -58,7 +58,7 @@ def register_user():
             continue
         else:
             password = input("Enter password: ")
-            user_accounts[username] = {"Username":username, "Password":password, "Budget" : 0,"Redeemable points":0,"Inventory":[]}
+            user_accounts[username] = {"Username":username, "Password":password, "Budget" : float(0),"Redeemable points":0,"Inventory":[]}
             print("Account created!")
             Space()
             main()
@@ -103,7 +103,7 @@ def rent_game(username):
                
                     game_points=game_cost/2
                     float(game_points)
-                    
+
                     user_accounts[username]["Redeemable points"]+=game_points
                     user_accounts[username]["Budget"]-=game_cost
 
