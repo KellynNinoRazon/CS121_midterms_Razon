@@ -61,8 +61,8 @@ def register_user():
             user_accounts[username] = {"Username":username, "Password":password, "Budget" : float(0),"Redeemable points":0,"Inventory":[]}
             print("Account created!")
             Space()
-            main()
-            break
+            return
+            
 
 def Log_in():
     user = input("Username: ")
@@ -152,7 +152,7 @@ def display_inventory(username):
 def admin_update_game(username):
     while True:
         print("1.Add new game\n2.Update quantity & cost\n3.Exit")
-        choice=Inputs(2)
+        choice=Inputs(3)
 
         if choice==1:
             new_game=input("Game name: ")
