@@ -58,7 +58,7 @@ def register_user():
             continue
         else:
             password = input("Enter password: ")
-            user_accounts[username] = {"Username":username, "Password":password, "Budget" : float(0),"Redeemable points":0,"Inventory":[]}
+            user_accounts[username] = {"Username":username, "Password":password, "Budget" : 0,"Redeemable points":0,"Inventory":[]}
             print("Account created!")
             Space()
             main()
@@ -87,8 +87,8 @@ def Log_in():
 def rent_game(username):
     display_available_games()
 
-    rent=input("Check inventory?(y/n) ")
-    if rent =="y":
+    check=input("Check inventory?(y/n) ")
+    if check =="y":
         display_inventory(username)
     else:
         pass
@@ -102,6 +102,8 @@ def rent_game(username):
                     print("Game Rented.")
                
                     game_points=game_cost/2
+                    float(game_points)
+                    
                     user_accounts[username]["Redeemable points"]+=game_points
                     user_accounts[username]["Budget"]-=game_cost
 
